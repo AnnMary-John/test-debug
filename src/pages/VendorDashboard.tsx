@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Plus, FileText, Building2 } from "lucide-react";
+import { Plus, FileText, Building2, LogOut } from "lucide-react";
 import VendorTable from "@/components/VendorTable";
 import VendorApplicationsTable from "@/components/VendorApplicationsTable";
 import VendorOnboardingForm from "@/components/VendorOnboardingForm";
 import { mockVendors, mockApplications, type VendorApplication } from "@/data/mockVendors";
+import { useAuth } from "@/contexts/AuthContext";
 
 type View = "vendors" | "applications";
 
@@ -12,6 +13,7 @@ const VendorDashboard = () => {
   const [view, setView] = useState<View>("vendors");
   const [addVendorOpen, setAddVendorOpen] = useState(false);
   const [applications, setApplications] = useState<VendorApplication[]>(mockApplications);
+  const { user, logout } = useAuth();
 
   const pendingCount = applications.filter((a) => a.status === "NEW").length;
 
