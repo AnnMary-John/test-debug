@@ -113,3 +113,13 @@ INSERT INTO `driver` (`id`, `name`, `licenseNumber`, `phoneNumber`, `vendorId`) 
 (UUID(), ''' OR ''1''=''1'' -- ', 'DL-SQL-INJ', '(000) 000-0000', 'VND-001'),
 (UUID(), 'Nellie Bertram', 'DL-012345', '(555) 123-0123', 'VND-001'),
 (UUID(), 'Clark Green', 'DL-678901', '(555) 123-6789', 'VND-001');
+
+-- Vendor Applications
+INSERT INTO `vendor_application` (`businessName`, `numberOfCars`, `numberOfVehicles`, `email`, `phone`, `status`, `internalNotes`) VALUES
+('Express Logistics', 10, 10, 'contact@expresslog.com', '(555) 0110', 'NEW', 'Interested in expanding to East Coast'),
+('Green Transport Co', 5, 5, 'info@greentransport.org', '(555) 0220', 'PENDING', 'Waiting for insurance verification'),
+('Skywide Haulers', 25, 25, 'apply@skywide.com', '(555) 0330', 'REJECTED', 'Failed compliance check in 2024'),
+('Urban Move', 8, 8, 'hello@urbanmove.io', '(555) 0440', 'APPROVED', 'Onboarding scheduled for next week'),
+('Apex Fleet Solutions', 15, 15, 'onboarding@apexfleet.com', '(555) 0550', 'NEW', 'New entrant in the Midwest region'),
+('Blue Sky Logistics', 12, 12, 'sales@blueskylogistics.net', '(555) 0660', 'NEW', 'Requesting bulk vehicle inspection'),
+('Swift Delivery Inc', 20, 20, 'hr@swiftdelivery.com', '(555) 0770', 'NEW', 'Urgent application for peak season');
