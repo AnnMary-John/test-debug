@@ -36,6 +36,11 @@ const VendorDashboard = () => {
             </div>
           </div>
 
+          <div className="flex items-center gap-3">
+            {user && (
+              <span className="hidden sm:inline text-sm text-muted-foreground">{user.email}</span>
+            )}
+
           {view === "vendors" && (
             <div className="flex items-center gap-2">
               <Button variant="outline" className="gap-2" onClick={() => setView("applications")}>
