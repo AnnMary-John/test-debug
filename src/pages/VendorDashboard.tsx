@@ -36,29 +36,32 @@ const VendorDashboard = () => {
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             {user && (
               <span className="hidden sm:inline text-sm text-muted-foreground">{user.email}</span>
             )}
-
-          {view === "vendors" && (
-            <div className="flex items-center gap-2">
-              <Button variant="outline" className="gap-2" onClick={() => setView("applications")}>
-                <FileText className="h-4 w-4" />
-                Vendor Applications
-                {pendingCount > 0 && (
-                  <span className="ml-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive text-[11px] font-semibold text-destructive-foreground px-1.5">
-                    {pendingCount}
-                  </span>
-                )}
-              </Button>
-              <Button className="gap-2" onClick={() => setAddVendorOpen(true)}>
-                <Plus className="h-4 w-4" />
-                Add Vendor
-              </Button>
-            </div>
-          )}
-        </div>
+            {view === "vendors" && (
+              <>
+                <Button variant="outline" className="gap-2" onClick={() => setView("applications")}>
+                  <FileText className="h-4 w-4" />
+                  Vendor Applications
+                  {pendingCount > 0 && (
+                    <span className="ml-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive text-[11px] font-semibold text-destructive-foreground px-1.5">
+                      {pendingCount}
+                    </span>
+                  )}
+                </Button>
+                <Button className="gap-2" onClick={() => setAddVendorOpen(true)}>
+                  <Plus className="h-4 w-4" />
+                  Add Vendor
+                </Button>
+              </>
+            )}
+            <Button variant="ghost" size="sm" onClick={logout} className="gap-1 text-muted-foreground">
+              <LogOut className="h-4 w-4" />
+              <span className="hidden sm:inline">Sign Out</span>
+            </Button>
+          </div>
       </header>
 
       {/* Content */}
