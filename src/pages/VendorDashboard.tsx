@@ -62,6 +62,7 @@ const VendorDashboard = () => {
               <span className="hidden sm:inline">Sign Out</span>
             </Button>
           </div>
+        </div>
       </header>
 
       {/* Content */}
