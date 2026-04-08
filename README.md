@@ -8,6 +8,29 @@ A comprehensive platform for managing vehicle vendors, their fleets, and applica
 - **Ops Portal (frontend)**: React + Vite + Tailwind CSS (for internal operations)
 - **Vendor Portal (vendor-portal)**: React + Vite + Tailwind CSS (for vendors to manage their fleet)
 
+## 💡 Basic Logic & Workflow
+
+The platform facilitates the relationship between the platform operators (Ops) and the third-party fleet providers (Vendors).
+
+### 1. Vendor Application & Onboarding
+- **Submission**: Potential vendors submit their details via an application process (tracked in `vendor_application` table).
+- **Review**: Ops users review these applications in the **Ops Portal**.
+- **Onboarding**: Once approved, an Ops user creates a formal **Vendor Profile**. This creates a entry in the `vendor` table and automatically generates a unique `vendorId`.
+
+### 2. User Accounts
+- **Platform Users (Admin)**: Have access to the Ops Portal to manage all vendors, review applications, and monitor system-wide compliance.
+- **Vendor Users**: Linked to a specific `vendorId`. They use the **Vendor Portal** to manage their specific fleet and drivers.
+
+### 3. Fleet Management (Vendor Side)
+- **Vehicles**: Vendors register and manage their cars.
+- **Drivers**: Vendors register their drivers.
+- **Data Isolation**: Vendors can *only* see and manage assets (cars/drivers) associated with their own `vendorId`.
+
+### 4. Monitoring & Compliance (Ops Side)
+- **Fleet Overview**: Ops users can see the total number of cars and drivers for each vendor.
+- **Compliance Tracking**: Ops can mark vendors as compliant or non-compliant and log specific issues.
+
+
 ## 🚀 Getting Started
 
 ### Prerequisites
