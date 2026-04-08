@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { Plus, FileText, Building2, LogOut } from "lucide-react";
+import { Plus, FileText, Building2, LogOut, Loader2 } from "lucide-react";
 import VendorTable from "@/components/VendorTable";
 import VendorApplicationsTable from "@/components/VendorApplicationsTable";
 import VendorOnboardingForm from "@/components/VendorOnboardingForm";
-import { mockVendors, mockApplications, type VendorApplication } from "@/data/mockVendors";
+import { getVendors, getApplications, updateApplication } from "@/lib/api";
+import { type VendorApplication } from "@/data/mockVendors";
 import { useAuth } from "@/contexts/AuthContext";
 
 type View = "vendors" | "applications";
@@ -12,14 +14,32 @@ type View = "vendors" | "applications";
 const VendorDashboard = () => {
   const [view, setView] = useState<View>("vendors");
   const [addVendorOpen, setAddVendorOpen] = useState(false);
-  const [applications, setApplications] = useState<VendorApplication[]>(mockApplications);
   const { user, logout } = useAuth();
+  const queryClient = useQueryClient();
 
-  const pendingCount = applications.filter((a) => a.status === "NEW").length;
+  const { data: vendors = [], isLoading: vendorsLoading } = useQuery({
+    queryKey: ["vendors"],
+    queryFn: () => getVendors().then((r) => r.data),
+  });
+
+  const { data: applications = [], isLoading: appsLoading } = useQuery({
+    queryKey: ["applications"],
+    queryFn: () => getApplications().then((r) => r.data),
+  });
+
+  const updateAppMutation = useMutation({
+    mutationFn: ({ id, updates }: { id: string; updates: Partial<VendorApplication> }) =>
+      updateApplication(id, updates as Record<string, unknown>),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["applications"] }),
+  });
+
+  const pendingCount = (applications as VendorApplication[]).filter((a) => a.status === "NEW").length;
 
   const handleUpdateApplication = (id: string, updates: Partial<VendorApplication>) => {
-    setApplications((prev) => prev.map((app) => (app.id === id ? { ...app, ...updates } : app)));
+    updateAppMutation.mutate({ id, updates });
   };
+
+  const isLoading = vendorsLoading || appsLoading;
 
   return (
     <div className="min-h-screen bg-background">
@@ -67,18 +87,26 @@ const VendorDashboard = () => {
 
       {/* Content */}
       <main className="container mx-auto px-6 py-6">
-        {view === "vendors" ? (
-          <VendorTable vendors={mockVendors} />
+        {isLoading ? (
+          <div className="flex items-center justify-center py-20">
+            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+          </div>
+        ) : view === "vendors" ? (
+          <VendorTable vendors={vendors.filter((v: any) => v.isActive)} />
         ) : (
           <VendorApplicationsTable
-            applications={applications}
+            applications={applications as VendorApplication[]}
             onBack={() => setView("vendors")}
             onUpdateApplication={handleUpdateApplication}
           />
         )}
       </main>
 
-      <VendorOnboardingForm open={addVendorOpen} onOpenChange={setAddVendorOpen} />
+      <VendorOnboardingForm
+        open={addVendorOpen}
+        onOpenChange={setAddVendorOpen}
+        onSuccess={() => queryClient.invalidateQueries({ queryKey: ["vendors"] })}
+      />
     </div>
   );
 };

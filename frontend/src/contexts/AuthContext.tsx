@@ -1,6 +1,15 @@
-import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useEffect,
+  type ReactNode,
+} from "react";
+import { loginApi } from "@/lib/api";
 
 interface User {
+  id?: string;
   email: string;
   name: string;
   role: string;
@@ -15,27 +24,36 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-const MOCK_CREDENTIALS = {
-  email: "admin@opsportal.com",
-  password: "admin123",
-  user: { email: "admin@opsportal.com", name: "Admin User", role: "platform_user" },
-};
-
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(() => {
+    // Restore session from localStorage on first render
+    try {
+      const stored = localStorage.getItem("auth_user");
+      return stored ? (JSON.parse(stored) as User) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  // Keep localStorage in sync whenever user changes
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem("auth_user", JSON.stringify(user));
+    } else {
+      localStorage.removeItem("auth_user");
+      localStorage.removeItem("access_token");
+    }
+  }, [user]);
 
   const login = useCallback(async (email: string, password: string): Promise<boolean> => {
-    // Mock auth — accepts any non-empty credentials for demo, or use the preset ones
-    await new Promise((r) => setTimeout(r, 600));
-    if (email && password) {
-      setUser(
-        email === MOCK_CREDENTIALS.email && password === MOCK_CREDENTIALS.password
-          ? MOCK_CREDENTIALS.user
-          : { email, name: email.split("@")[0], role: "platform_user" }
-      );
+    try {
+      const { data } = await loginApi(email, password);
+      localStorage.setItem("access_token", data.access_token);
+      setUser(data.user);
       return true;
+    } catch {
+      return false;
     }
-    return false;
   }, []);
 
   const logout = useCallback(() => setUser(null), []);

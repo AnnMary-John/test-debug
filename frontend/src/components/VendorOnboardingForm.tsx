@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { createVendor } from "@/lib/api";
 
 interface VendorFormData {
   companyName: string;
@@ -19,6 +20,7 @@ interface VendorOnboardingFormProps {
   onOpenChange: (open: boolean) => void;
   prefillData?: Partial<VendorFormData>;
   onSubmit?: (data: VendorFormData) => void;
+  onSuccess?: () => void;
 }
 
 const emptyForm: VendorFormData = {
@@ -30,19 +32,36 @@ const emptyForm: VendorFormData = {
   numberOfDrivers: "",
 };
 
-const VendorOnboardingForm = ({ open, onOpenChange, prefillData, onSubmit }: VendorOnboardingFormProps) => {
+const VendorOnboardingForm = ({ open, onOpenChange, prefillData, onSubmit, onSuccess }: VendorOnboardingFormProps) => {
   const [formData, setFormData] = useState<VendorFormData>({ ...emptyForm, ...prefillData });
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (field: keyof VendorFormData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit?.(formData);
-    toast.success("Vendor onboarded successfully!");
-    onOpenChange(false);
-    setFormData(emptyForm);
+    setLoading(true);
+    try {
+      await createVendor({
+        companyName: formData.companyName,
+        businessAddress: formData.businessAddress,
+        contactPhone: formData.contactPhone,
+        email: formData.email,
+        numberOfCars: Number(formData.numberOfCars),
+        numberOfDrivers: Number(formData.numberOfDrivers),
+      });
+      onSubmit?.(formData);
+      onSuccess?.();
+      toast.success("Vendor onboarded successfully!");
+      onOpenChange(false);
+      setFormData(emptyForm);
+    } catch {
+      toast.error("Failed to onboard vendor. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -82,8 +101,10 @@ const VendorOnboardingForm = ({ open, onOpenChange, prefillData, onSubmit }: Ven
             </div>
           </div>
           <div className="flex justify-end gap-2 pt-2">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
-            <Button type="submit">Onboard Vendor</Button>
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={loading}>Cancel</Button>
+            <Button type="submit" disabled={loading}>
+              {loading ? "Onboarding…" : "Onboard Vendor"}
+            </Button>
           </div>
         </form>
       </DialogContent>
