@@ -17,7 +17,7 @@ export const Dashboard: React.FC = () => {
   useEffect(() => {
     // Add dark class to body to ensure consistent look with Ops Portal dark theme
     document.documentElement.classList.add('dark');
-    
+
     const fetchCars = async () => {
       try {
         const res = await getCars();
@@ -78,11 +78,10 @@ export const Dashboard: React.FC = () => {
           </div>
           <button
             onClick={() => setActiveTab('cars')}
-            className={`w-full flex items-center justify-between px-4 py-3 rounded-md transition-all group ${
-              activeTab === 'cars' 
-                ? 'bg-sidebar-accent text-sidebar-foreground shadow-sm' 
+            className={`w-full flex items-center justify-between px-4 py-3 rounded-md transition-all group ${activeTab === 'cars'
+                ? 'bg-sidebar-accent text-sidebar-foreground shadow-sm'
                 : 'text-sidebar-foreground/60 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'
-            }`}
+              }`}
           >
             <div className="flex items-center gap-3">
               <Car className="w-5 h-5" />
@@ -90,14 +89,13 @@ export const Dashboard: React.FC = () => {
             </div>
             {activeTab === 'cars' && <ChevronRight className="w-4 h-4" />}
           </button>
-          
+
           <button
             onClick={() => setActiveTab('drivers')}
-            className={`w-full flex items-center justify-between px-4 py-3 rounded-md transition-all group ${
-              activeTab === 'drivers' 
-                ? 'bg-sidebar-accent text-sidebar-foreground shadow-sm' 
+            className={`w-full flex items-center justify-between px-4 py-3 rounded-md transition-all group ${activeTab === 'drivers'
+                ? 'bg-sidebar-accent text-sidebar-foreground shadow-sm'
                 : 'text-sidebar-foreground/60 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'
-            }`}
+              }`}
           >
             <div className="flex items-center gap-3">
               <Users className="w-5 h-5" />
@@ -222,7 +220,7 @@ export const Dashboard: React.FC = () => {
             <div className="flex items-center justify-between px-2 mb-10">
               <div className="text-xs text-muted-foreground uppercase tracking-widest font-bold">
                 Showing <span className="text-foreground">{(page - 1) * limit + 1}</span>-
-                <span className="text-foreground">{Math.min(page * limit, totalDrivers)}</span> of 
+                <span className="text-foreground">{Math.min(page * limit, totalDrivers)}</span> of
                 <span className="text-foreground ml-1">{totalDrivers}</span> drivers
               </div>
               <div className="flex items-center gap-2">
@@ -243,7 +241,7 @@ export const Dashboard: React.FC = () => {
               </div>
             </div>
           )}
-          
+
           <footer className="mt-8 text-center text-[10px] text-muted-foreground/40 uppercase tracking-[0.2em]">
             &copy; 2026 Fleet Management Systems &bull; Confidential Data
           </footer>
