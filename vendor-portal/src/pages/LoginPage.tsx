@@ -2,28 +2,36 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { LogIn, ShieldCheck } from 'lucide-react';
+import { toast } from "sonner";
 
-export const LoginPage: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+export const LoginPage = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const { login } = useAuth();
+  const {user}= useAuth();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    // Sync with Ops Portal theme
-    document.documentElement.classList.add('dark');
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      await login(email, password);
-      navigate('/');
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Unauthorized access. Please contact support.');
+    setLoading(true);
+    const success = await login(email, password);
+    setLoading(false);
+    if (!success) {
+      toast.error("Invalid credentials. Please try again.");
     }
   };
+
+  useEffect(() => {
+  if (!user) return;
+  console.log(user.role);
+  if (user.role === "platform_user") {
+    toast.error("only vendors can log in!");
+  } else {
+    toast.success("Welcome back!");
+    navigate("/");
+  }
+}, [user]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4 text-foreground selection:bg-primary/30">
@@ -40,11 +48,7 @@ export const LoginPage: React.FC = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="relative space-y-6">
-          {error && (
-            <div className="bg-destructive/10 border border-destructive/20 text-destructive p-4 rounded-xl text-xs font-semibold animate-in fade-in slide-in-from-top-1">
-              {error}
-            </div>
-          )}
+          
           
           <div className="space-y-2">
             <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1">Corporate Email</label>
@@ -94,3 +98,4 @@ export const LoginPage: React.FC = () => {
     </div>
   );
 };
+

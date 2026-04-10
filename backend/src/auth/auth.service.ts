@@ -16,7 +16,7 @@ export class AuthService {
   async login(email: string, password: string) {
     const user = await this.userRepository.findOneBy({ email, password });
     if (!user) throw new UnauthorizedException('Invalid credentials');
-
+    //if(user.role!='vendor') throw new UnauthorizedException('Only vendors can login');
     const payload = { sub: user.id, email: user.email, role: user.role, vendorId: user.vendorId };
     return {
       access_token: this.jwtService.sign(payload),

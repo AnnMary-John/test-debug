@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,6 +13,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
+  const {user}= useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -20,13 +21,22 @@ const Login = () => {
     setLoading(true);
     const success = await login(email, password);
     setLoading(false);
-    if (success) {
-      toast.success("Welcome back!");
-      navigate("/");
-    } else {
+    if (!success) {
       toast.error("Invalid credentials. Please try again.");
     }
   };
+
+  useEffect(() => {
+  if (!user) return;
+  console.log(user.role);
+  if (user.role === "vendor") {
+    toast.error("only platform users can log in!");
+  } else {
+    toast.success("Welcome back!");
+    navigate("/");
+  }
+},[user]);
+  
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">

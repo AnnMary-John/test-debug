@@ -20,8 +20,11 @@ const VendorTable = ({ vendors }: VendorTableProps) => {
   const [popupOpen, setPopupOpen] = useState(false);
 
   const handleComplianceClick = (vendor: Vendor) => {
+    console.log(statusConfig[vendor.complianceStatus].label);
+    if(statusConfig[vendor.complianceStatus].label=="Non-Compliant"){
     setSelectedVendor(vendor);
     setPopupOpen(true);
+    }
   };
 
   return (

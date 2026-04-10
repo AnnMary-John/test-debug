@@ -40,7 +40,7 @@ export class VendorsService {
       totalDrivers: Number(dto.numberOfDrivers),
       complianceStatus: 'pending',
       complianceIssues: [],
-      isActive: false,
+      isActive: true,
     });
     return this.vendorRepository.save(vendor);
   }
